@@ -124,8 +124,8 @@ namespace AppxPackagesManager {
                     PackageName = GetValue(package, "name", "Unknown").ToString(),
                     PackageFullName = packageFullName,
                     RequiredFor = string.Join("\n", requiredFor),
-                    NonRemovable = GetValue(package, "is_framework", "Unknown").ToString(),
-                    Framework = GetValue(package, "is_non_removable", "Unknown").ToString(),
+                    NonRemovable = GetValue(package, "is_non_removable", "Unknown").ToString(),
+                    Framework = GetValue(package, "is_framework", "Unknown").ToString(),
                 };
 
                 _packagesGridItems.Add(packagesGridItem);
