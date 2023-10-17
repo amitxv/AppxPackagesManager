@@ -47,7 +47,13 @@ namespace AppxPackagesManager {
 
                     var friendlyName = result.Properties["Name"].Value.ToString();
                     var isFramework = result.Properties["IsFramework"].Value;
-                    var isNonRemovable = result.Properties["NonRemovable"].Value;
+
+                    object isNonRemovable = null;
+                    try {
+                        isNonRemovable = result.Properties["NonRemovablee"].Value;
+                    } catch {
+                        // ignore
+                    }
 
                     try {
                         var doc = XDocument.Load($"{result.Properties["InstallLocation"].Value}\\AppxManifest.xml");
@@ -68,12 +74,14 @@ namespace AppxPackagesManager {
                         _appxPackages[packageFullName]["is_framework"] = isFramework;
                         _appxPackages[packageFullName]["is_non_removable"] = isNonRemovable;
                     } else {
-                        _appxPackages[packageFullName] = new Dictionary<string, object> {
+                        var data = new Dictionary<string, object> {
                             { "name",  friendlyName},
                             { "required_for",  new List<string>() },
-                            { "is_framework",  isFramework},
-                            { "is_non_removable", isNonRemovable},
+                            { "is_framework",  isFramework },
+                            { "is_non_removable",  isNonRemovable },
                         };
+
+                        _appxPackages[packageFullName] = data;
                     }
                 }
 
@@ -107,9 +115,10 @@ namespace AppxPackagesManager {
                 var package = _appxPackages[packageFullName];
 
                 var isFramework = (bool)GetValue(package, "is_framework", false);
-                var isNonRemovable = (bool)GetValue(package, "is_non_removable", false);
+                var isNonRemovable = GetValue(package, "is_non_removable", false);
 
-                if ((hideFrameworkPackages.IsChecked is true && isFramework) || (hideNonRemovablePackages.IsChecked is true && isNonRemovable)) {
+
+                if ((hideFrameworkPackages.IsChecked is true && isFramework) || (hideNonRemovablePackages.IsChecked is true && isNonRemovable is true)) {
                     continue;
                 }
 
@@ -121,7 +130,7 @@ namespace AppxPackagesManager {
                     PackageName = GetValue(package, "name", "Unknown").ToString(),
                     PackageFullName = packageFullName,
                     RequiredFor = string.Join("\n", requiredFor),
-                    NonRemovable = GetValue(package, "is_non_removable", "Unknown").ToString(),
+                    NonRemovable = isNonRemovable is null ? "Unknown" : (isNonRemovable is true).ToString(),
                     Framework = GetValue(package, "is_framework", "Unknown").ToString(),
                 };
 
