@@ -50,7 +50,7 @@ namespace AppxPackagesManager {
 
                     object isNonRemovable = null;
                     try {
-                        isNonRemovable = result.Properties["NonRemovablee"].Value;
+                        isNonRemovable = result.Properties["NonRemovable"].Value;
                     } catch {
                         // ignore
                     }
