@@ -74,14 +74,12 @@ namespace AppxPackagesManager {
                         _appxPackages[packageFullName]["is_framework"] = isFramework;
                         _appxPackages[packageFullName]["is_non_removable"] = isNonRemovable;
                     } else {
-                        var data = new Dictionary<string, object> {
+                        _appxPackages[packageFullName] = new Dictionary<string, object> {
                             { "name",  friendlyName},
                             { "required_for",  new List<string>() },
                             { "is_framework",  isFramework },
                             { "is_non_removable",  isNonRemovable },
                         };
-
-                        _appxPackages[packageFullName] = data;
                     }
                 }
 
