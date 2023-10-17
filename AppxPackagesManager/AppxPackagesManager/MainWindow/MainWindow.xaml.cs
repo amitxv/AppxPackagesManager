@@ -112,11 +112,11 @@ namespace AppxPackagesManager {
             foreach (var packageFullName in _appxPackages.Keys) {
                 var package = _appxPackages[packageFullName];
 
-                var isFramework = (bool)GetValue(package, "is_framework", false);
+                var isFramework = GetValue(package, "is_framework", false);
                 var isNonRemovable = GetValue(package, "is_non_removable", false);
 
 
-                if ((hideFrameworkPackages.IsChecked is true && isFramework) || (hideNonRemovablePackages.IsChecked is true && isNonRemovable is true)) {
+                if ((hideFrameworkPackages.IsChecked is true && isFramework is true) || (hideNonRemovablePackages.IsChecked is true && isNonRemovable is true)) {
                     continue;
                 }
 
