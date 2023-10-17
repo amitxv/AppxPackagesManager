@@ -2,17 +2,18 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Management.Automation;
-using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Xml.Linq;
+
+using Microsoft.Windows.Appx.PackageManager.Commands;
 
 using Windows.Management.Deployment;
 
 namespace AppxPackagesManager {
     public partial class MainWindow : Window {
         private readonly Dictionary<string, Dictionary<string, object>> _appxPackages = new Dictionary<string, Dictionary<string, object>>();
-        private readonly ObservableCollection<AppxPackage> _packagesGridItems = new ObservableCollection<AppxPackage>();
+        private readonly ObservableCollection<GridItem> _packagesGridItems = new ObservableCollection<GridItem>();
         private readonly PackageManager _packageManager = new PackageManager();
 
         public MainWindow() {
@@ -31,12 +32,8 @@ namespace AppxPackagesManager {
                 foreach (var result in results) {
                     var packageFullName = result.Properties["PackageFullName"].Value.ToString();
 
-                    // parse the dependencies json string into a list
-                    var packageDependenciesString = JsonSerializer.Serialize(result.Properties["Dependencies"].Value);
-                    var packageDependencies = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(packageDependenciesString);
-
-                    foreach (var dependency in packageDependencies) {
-                        var dependencyName = dependency["PackageFullName"].ToString();
+                    foreach (var dependency in (AppxPackage[])result.Properties["Dependencies"].Value) {
+                        var dependencyName = dependency.PackageFullName;
 
                         // dependency data might not already exist so we need to add it now
                         if (_appxPackages.ContainsKey(dependencyName)) {
@@ -118,7 +115,7 @@ namespace AppxPackagesManager {
 
                 var requiredFor = (List<string>)GetValue(package, "required_for", new List<string>());
 
-                var packagesGridItem = new AppxPackage {
+                var packagesGridItem = new GridItem {
                     Uninstall = false,
                     CanUninstall = requiredFor.Count == 0,
                     PackageName = GetValue(package, "name", "Unknown").ToString(),
@@ -136,7 +133,7 @@ namespace AppxPackagesManager {
         }
 
         private void CheckAllPackages(bool isChecked) {
-            foreach (AppxPackage package in packagesDataGrid.Items) {
+            foreach (GridItem package in packagesDataGrid.Items) {
                 if (package.CanUninstall) {
                     package.Uninstall = isChecked;
                 }
@@ -186,7 +183,7 @@ namespace AppxPackagesManager {
             var removedPackages = 0;
 
             // uninstall selected packages
-            foreach (AppxPackage package in packagesDataGrid.Items) {
+            foreach (GridItem package in packagesDataGrid.Items) {
                 if (package.CanUninstall && package.Uninstall) {
                     var deploymentResult = _packageManager.RemovePackageAsync(package.PackageFullName).GetResults();
 

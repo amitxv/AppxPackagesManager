@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 
 namespace AppxPackagesManager {
-    public class AppxPackage : INotifyPropertyChanged {
+    public class GridItem : INotifyPropertyChanged {
         private bool _uninstall;
 
         public bool Uninstall {
