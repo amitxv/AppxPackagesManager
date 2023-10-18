@@ -106,6 +106,13 @@ namespace AppxPackagesManager {
         }
 
         private void GetAppxPackages() {
+            // keep a note of what was checked before clearing
+            var prevPackagesGridItemsChecked = new Dictionary<string, object>();
+
+            foreach (var item in _packagesGridItems) {
+                prevPackagesGridItemsChecked.Add(item.PackageFullName, item.Uninstall);
+            }
+
             // clear existing items
             _packagesGridItems.Clear();
 
@@ -123,7 +130,7 @@ namespace AppxPackagesManager {
                 var requiredFor = (List<string>)GetValue(package, "required_for", new List<string>());
 
                 var packagesGridItem = new GridItem {
-                    Uninstall = false,
+                    Uninstall = (bool)GetValue(prevPackagesGridItemsChecked, packageFullName, false),
                     CanUninstall = requiredFor.Count == 0,
                     PackageName = GetValue(package, "name", "Unknown").ToString(),
                     PackageFullName = packageFullName,
