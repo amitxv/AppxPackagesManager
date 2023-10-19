@@ -194,7 +194,6 @@ namespace AppxPackagesManager {
 
         private void UninstallPackagesClick(object sender, RoutedEventArgs e) {
             var totalPackages = 0;
-            var removedPackages = 0;
 
             // uninstall selected packages
             foreach (GridItem package in packagesDataGrid.Items) {
@@ -202,16 +201,12 @@ namespace AppxPackagesManager {
                     var deploymentResult = _packageManager.RemovePackageAsync(package.PackageFullName).GetResults();
 
                     totalPackages++;
-
-                    if (!deploymentResult.IsRegistered) {
-                        removedPackages++;
-                    }
                 }
             }
 
             _ = MessageBox.Show(totalPackages == 0
                 ? "No packages selected"
-                : $"{removedPackages}/{totalPackages} packages removed, {totalPackages - removedPackages} Failed", "AppxPackagesManager", MessageBoxButton.OK, MessageBoxImage.Information);
+                : "Attempted to remove selected packages.\nPress OK to refresh list", "AppxPackagesManager", MessageBoxButton.OK, MessageBoxImage.Information);
 
             RefreshList();
         }
