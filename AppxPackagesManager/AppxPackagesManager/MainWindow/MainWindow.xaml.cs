@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Management.Automation;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Xml.Linq;
@@ -18,6 +19,10 @@ namespace AppxPackagesManager {
 
         public MainWindow() {
             InitializeComponent();
+
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            Title = $"AppxPackagesManager v{version.Major}.{version.Minor}.{version.Build}";
+
             GetPackageData();
             GetAppxPackages();
         }
