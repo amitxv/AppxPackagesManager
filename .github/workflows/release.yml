@@ -15,9 +15,6 @@ jobs:
       - name: Set up MSVC environment
         uses: microsoft/setup-msbuild@v1
 
-      - name: Set up NuGet CLI
-        run: Invoke-WebRequest -Uri https://dist.nuget.org/win-x86-commandline/latest/nuget.exe -OutFile C:\Windows\nuget.exe
-
       - name: Install packages
         run: nuget restore .\AppxPackagesManager\AppxPackagesManager.sln
 
