@@ -24,11 +24,6 @@ jobs:
       - name: Build executable
         run: MSBuild.exe .\AppxPackagesManager\AppxPackagesManager.sln -p:Configuration=Release -p:Platform=x64
 
-      - name: Upload to release
-        uses: softprops/action-gh-release@v1
-        with:
-          files:
-
       - name: Create release
         uses: ncipollo/release-action@v1
         with:
