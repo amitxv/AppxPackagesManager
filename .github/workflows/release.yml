@@ -1,8 +1,11 @@
 name: Create release
 
 on:
-  release:
-    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version of the program to build. This will be used for the tag and release name."
+        required: true
 
 jobs:
   build:
@@ -24,4 +27,12 @@ jobs:
       - name: Upload to release
         uses: softprops/action-gh-release@v1
         with:
-          files: ./AppxPackagesManager/AppxPackagesManager/bin/x64/Release/AppxPackagesManager.exe
+          files:
+
+      - name: Create release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ inputs.version }}
+          name: ${{ inputs.version }}
+          artifacts: ./AppxPackagesManager/AppxPackagesManager/bin/x64/Release/AppxPackagesManager.exe
+          generateReleaseNotes: true
