@@ -8,7 +8,7 @@ on:
         required: true
 
       pre-release:
-        description: "Version of the program to build. This will be used for the tag and release name."
+        description: "Pre-release"
         required: true
         default: false
         type: boolean
